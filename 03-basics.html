@@ -1,0 +1,189 @@
+<section id="basics">
+
+    <section>
+        <h2>Rappels JavaScript</h2>
+    </section>
+
+    <section>
+        <h3>Object Destructuring</h3>
+        <p>La destructuration d'objet permet d'extraire des données d'un objet.</p>
+        <p>La syntaxe est la suivante :</p>
+        <pre class="line-numbers"><code class="language-javascript">const person = {
+    firstName: 'John',
+    lastName: 'Doe',
+    age: 42
+};
+
+const { firstName, lastName } = person;</code></pre>
+    </section>
+
+    <section>
+        <h3>Arrow functions</h3>
+        <p>Avec ES6 est apparu une nouvelle syntaxe pour créer des fonctions appelée <strong>arrow function</strong>.</p>
+        <pre><code class="language-js">setTimeout(function() {
+    return console.log('ok');
+}, 2000);
+
+setTimeout(() => console.log('ok'), 2000); // Le return est implicite et le ";" inutile</code></pre>
+        <pre><code class="language-js">const fs = require('node:fs');
+
+fs.readFile('file.txt', (err, data) => { // Si il n'y a qu'un seul paramètre, les parenthèses sont optionnelles
+    if (err) {
+        throw err;
+    }
+    console.log(data);
+});</code></pre>
+    </section>
+
+    <section>
+        <h3>Promise</h3>
+        <p>Une <code class="language-javascript">Promise</code> est un objet qui représente la complétion ou l'échec d'une opération asynchrone.</p>
+        <p>Ce système permet de simplifier l'écriture de <strong>code asynchrone</strong> en évitant de tomber dans le callback hell.</p>
+        <img src="assets/images/promises.png" alt="Promises">
+    </section>
+
+    <section>
+        <h3>Utiliser Promise</h3>
+        <p>Pour construire une fonction asynchrone utilisant l'objet Promise, il faut que notre fonction retourne une instance de <code class="language-js">Promise</code> :</p>
+        <pre><code class="language-js">function fetchData() {
+    return new Promise();
+}</code></pre>
+    </section>
+
+    <section>
+        <h3>Utiliser Promise</h3>
+        <p>Le constructeur de <code class="language-js">Promise</code> prend en paramètre 1 fonction prenant elle-même 2 paramètres.</p>
+        <p>Le 1er paramètre est une fonction à appeler en cas de succès et le second est également une fonction à appeler en cas d'échec :</p>
+        <pre><code class="language-js">function fetchData() {
+    return new Promise(function(resolve, reject) {
+
+    });
+}</code></pre>
+    </section>
+
+    <section>
+        <h3>Utiliser Promise</h3>
+        <p>Enfin, il faut implémenter le code de cette fonction :</p>
+        <pre class="line-numbers" data-line="5,8"><code class="language-js">function fetchData() {
+    return new Promise(function(resolve, reject) {
+        if (Math.random() > 0.5) {
+            setTimeout(function() {
+                resolve('success');
+            }, 2000);
+        } else {
+            reject('failure');
+        }
+    });
+}</code></pre>
+    </section>
+
+    <section>
+        <h3>Utiliser Promise</h3>
+        <p>Pour utiliser notre fonction, il faut utiliser la méthode <code class="language-js">then</code> qui prend en paramètre une fonction à appeler en cas de succès :</p>
+        <pre class="line-numbers"><code class="language-js">fetchData()
+    .then(data => {
+        console.log(data);
+    }
+    .catch(error => {
+        console.log(error);
+    }
+);</code></pre>
+    </section>
+
+    <section>
+        <h3>Async / Await</h3>
+        <p>Les mots clés <code class="language-javascript">async</code> et <code class="language-javascript">await</code> permettent de gérer les <code class="language-javascript">Promise</code> de manière plus lisible.</p>
+        <p>La syntaxe est la suivante :</p>
+        <pre class="line-numbers"><code class="language-javascript">const asyncFunction = async () => {
+    try {
+        const data = await fetchData();
+        console.log(data);
+    } catch (error) {
+        console.log(error);
+    }
+};</code></pre>
+    </section>
+
+    <section>
+        <h3>Asynchronisme</h3>
+        <p>NodeJS est un environnement asynchrone.</p>
+        <p>Il est donc important de comprendre comment fonctionne l'asynchronisme en JavaScript.</p>
+        <p>Par exemple, le code suivant pourrait produire un résultat inattendu :</p>
+        <pre class="line-numbers"><code class="language-javascript">const fs = require('node:fs');
+
+fs.appendFile('file.txt', 'new line', err => {
+  if (err) throw err;
+  console.log('New line added to the file!');
+});
+
+fs.stat('file.txt', (err, stats) => {
+  if (err) throw err;
+  console.log(stats.size);
+});</code></pre>
+    </section>
+
+
+
+    <section>
+        <h3>Asynchronisme</h3>
+        <p>Trois solutions pour résoudre ce problème :</p>
+        <h4 style="text-align: left;">1. Utiliser des callbacks</h4>
+        <p class="text-small">
+            C'est-à-dire conserver la syntaxe de la slide précédente et imbriquer les appels de fonctions
+            (<code class="language-js">fs.stat</code> dans la fonction de callback de <code class="language-js">fs.appendFile</code>).
+        </p>
+        <h4 style="text-align: left;">2. Utiliser des Promises</h4>
+        <p class="text-small">C'est-à-dire utiliser des fonctions asynchrones qui retournent une instance de <code class="language-js">Promise</code>.</p>
+        <p class="text-small">Pour cela, il faut importer le module File System avec la syntaxe suivante :</p>
+        <pre class="line-numbers"><code class="language-js">const fs = require('node:fs').promises;</code></pre>
+        <h4 style="text-align: left;">3. Utiliser des fonctions asynchrones</h4>
+        <p class="text-small">C'est-à-dire utiliser les versions asynchrones des fonctions précédentes :</p>
+        <pre class="line-numbers"><code class="language-js">fs.appendFileSync()</code></pre>
+        <blockquote>
+            <p class="text-small">
+                In busy processes, the programmer is strongly encouraged to use the asynchronous versions of these calls.
+                The synchronous versions will block the entire process until they complete — halting all connections.
+            </p>
+        </blockquote>
+    </section>
+
+    <section>
+        <h3>CommonJS</h3>
+        <p>CommonJS est une spécification qui définit un système de modules pour JavaScript en dehors du navigateur.</p>
+        <p>NodeJS implémente cette spécification depuis sa création.</p>
+        <p>La syntaxe est la suivante :</p>
+        <div class="container">
+            <div class="col">
+                <h4>app.js</h4>
+                <pre class="line-numbers"><code class="language-javascript">const { add } = require('./calcul.js');
+console.log(add(1, 2)); // 3</code></pre>
+            </div>
+            <div class="col">
+                <h4>calcul.js</h4>
+                <pre class="line-numbers"><code class="language-javascript">module.exports.add = (a, b) => a + b;
+module.exports.sub = (a, b) => a - b;</code></pre>
+            </div>
+        </div>
+    </section>
+
+    <section>
+        <h3>ES Modules</h3>
+        <p>ES Modules est une spécification de ECMAScript qui définit un système de modules utilisable dans le navigateur et en dehors.</p>
+        <p>NodeJS implémente cette spécification depuis la version 13.2.0.</p>
+        <p>Il faut préalablement ajouter <code class="language-json">type="module"</code> dans le fichier <code>package.json</code> pour pouvoir utiliser les ES modules.</p>
+        <p>La syntaxe est la suivante :</p>
+        <div class="container">
+            <div class="col">
+                <h4>app.js</h4>
+                <pre class="line-numbers"><code class="language-javascript">import { add } from './calcul.js';
+console.log(add(1, 2)); // 3</code></pre>
+            </div>
+            <div class="col">
+                <h4>calcul.js</h4>
+                <pre class="line-numbers"><code class="language-javascript">export const add = (a, b) => a + b;
+export const sub = (a, b) => a - b;</code></pre>
+            </div>
+        </div>
+    </section>
+
+</section>

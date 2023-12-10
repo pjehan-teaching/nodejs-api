@@ -1,0 +1,207 @@
+<section id="express">
+
+    <section>
+        <h2>Express</h2>
+    </section>
+
+    <section>
+        <h3>Qu'est-ce qu'Express ?</h3>
+        <blockquote>
+            <p>Fast, unopinionated, minimalist web framework for Node.js</p>
+        </blockquote>
+        <p>Express est un framework web minimaliste et flexible pour NodeJS.</p>
+        <p>Il permet de créer des applications web et des APIs.</p>
+        <img src="assets/images/express.png" alt="Express">
+    </section>
+
+    <section>
+        <h3>Installation</h3>
+        <p>Il est possible d'installer Express dans un projet NodeJS avec la commande suivante :</p>
+        <pre class="line-numbers"><code class="language-bash">npm install express</code></pre>
+        <p>Il est également possible d'installer Express en utilisant un générateur :</p>
+        <pre class="line-numbers"><code class="language-bash">npx express-generator --git --pug my-project
+cd my-project
+npm install</code></pre>
+        <div class="instructions">
+            <ul>
+                <li>Créer un nouveau projet Express en suivant le projet fil rouge</li>
+            </ul>
+        </div>
+        <footer>
+            <a href="https://expressjs.com/en/starter/generator.html" class="info" target="_blank">Express application generator</a>
+        </footer>
+    </section>
+
+    <section>
+        <h3>Structure d'un projet Express</h3>
+        <pre class="line-numbers"><code class="language-bash">my-project
+├── bin
+│   └── www # Point d'entrée de l'application
+├── node_modules
+├── public
+│   ├── images # Images statiques
+│   ├── javascripts # Scripts statiques
+│   └── stylesheets # Feuilles de style statiques
+│       └── style.css
+├── routes # Routes de l'application
+│   ├── index.js # Route /
+│   └── users.js # Route /users
+├── views # Vues de l'application
+│   ├── error.pug # Page d'erreur
+│   ├── index.pug # Page /
+│   ├── layout.pug # Layout de l'application
+├── app.js # Configuration de l'application
+├── package.json
+└── package-lock.json</code></pre>
+    </section>
+
+    <section>
+        <h3>Configuration d'Express</h3>
+        <p>
+            Le fichier <code>bin/www</code> est le point d'entrée de l'application.
+            C'est le fichier qui est appelé par la commande <code class="language-bash">npm start</code>.
+        </p>
+        <p>Ce fichier va importer le fichier <code>app.js</code> qui va lui-même importer les routes de l'application.</p>
+    </section>
+
+    <section>
+        <h3>Configuration d'Express</h3>
+        <p>Le fichier <code>app.js</code> va importer les modules nécessaires à l'application :</p>
+        <pre class="line-numbers"><code class="language-javascript">const express = require('express');
+const path = require('path');
+...</code></pre>
+        <p>Il va ensuite créer une instance d'Express :</p>
+        <pre class="line-numbers"><code class="language-javascript">const app = express();</code></pre>
+        <p>Il va ensuite configurer l'application :</p>
+        <pre class="line-numbers"><code class="language-javascript">app.set('views', path.join(__dirname, 'views'));
+app.set('view engine', 'pug');</code></pre>
+        <p>Il va ensuite importer les routes de l'application :</p>
+        <pre class="line-numbers"><code class="language-javascript">const indexRouter = require('./routes/index');
+const usersRouter = require('./routes/users');</code></pre>
+    </section>
+
+    <section>
+        <h3>Middleware</h3>
+        <p>Un middleware est une fonction qui va être exécutée à chaque requête.</p>
+        <p>Il peut être utilisé pour effectuer des actions avant ou après le traitement de la requête.</p>
+        <p>Il peut également être utilisé pour vérifier des informations avant de traiter la requête.</p>
+        <p>Un middleware est une fonction qui prend 3 paramètres :</p>
+        <ul>
+            <li>La requête</li>
+            <li>La réponse</li>
+            <li>La fonction <code>next</code> qui permet de passer au middleware suivant</li>
+        </ul>
+        <pre class="line-numbers"><code class="language-javascript">app.use(function(req, res, next) {
+    console.log('Time:', Date.now());
+    next();
+});</code></pre>
+    </section>
+
+    <section>
+        <h3>Middleware</h3>
+        <p>Plusieurs middlewares sont déjà inclus dans Express :</p>
+        <ul>
+            <li><code>express.static</code> : Permet de servir des fichiers statiques</li>
+            <li><code>express.json</code> : Permet de parser les données envoyées en JSON</li>
+            <li><code>express.urlencoded</code> : Permet de parser les données envoyées en POST</li>
+            <li>...</li>
+        </ul>
+        <p>Les routes sont également des middlewares.</p>
+        <pre class="line-numbers"><code class="language-javascript">app.use('/', indexRouter);
+app.use('/users', usersRouter);</code></pre>
+    </section>
+
+    <section>
+        <h3>Compilation du code</h3>
+        <p>Il est nécessaire de relancer le serveur à chaque modification du code.</p>
+        <p>
+            Il est possible d'utiliser le module <a href="https://www.npmjs.com/package/nodemon" target="_blank">nodemon</a>
+            pour relancer automatiquement le serveur à chaque modification du code.
+        </p>
+        <p>Cependant, depuis la version 18 de NodeJS, il est possible d'utiliser le flag <code class="language-bash">--watch</code> pour relancer automatiquement le serveur à chaque modification du code.</p>
+    </section>
+
+    <section>
+        <h3>Variables d'environnement</h3>
+        <p>Il est possible de définir des variables d'environnement dans le fichier <code>.env</code> :</p>
+        <pre class="line-numbers"><code class="language-bash">PORT=3000</code></pre>
+        <p>Il est possible de récupérer une variable d'environnement avec la syntaxe suivante :</p>
+        <pre class="line-numbers"><code class="language-javascript">const port = process.env.PORT;</code></pre>
+        <p>Pour avoir accès à nos variables d'environnement, il faut utiliser le module <a href="https://www.npmjs.com/package/dotenv" target="_blank">dotenv</a>.</p>
+        <p>Cependant, depuis la version 20 de NodeJS, il est possible d'utiliser le flag <code class="language-bash">--env-file=.env --env-file=.env.local</code> pour charger les variables d'environnement.</p>
+    </section>
+
+    <section>
+        <h3>Moteur de template</h3>
+        <p>Par défaut, <strong>aucun moteur de template</strong> n'est installé. Cependant, il est possible d'ajouter un moteur de template à Express.</p>
+        <p>Express supporte plusieurs moteurs de template (Pug, Mustache, EJS...) mais celui recommandé dans la documentation est <strong>Pug</strong> (anciennement Jade).</p>
+        <p>Nous allons donc ajouter le moteur de template Pug dans nos dépendances :</p>
+        <pre><code class="language-bash">npm install --save pug</code></pre>
+        <footer>
+            <a href="https://expressjs.com/en/guide/using-template-engines.html" class="info" target="_blank">Moteur de template</a>
+        </footer>
+    </section>
+
+    <section>
+        <h3>Pug</h3>
+        <p>Nous allons maintenant activer le moteur de template dans Express :</p>
+        <pre><code class="language-js">app.set('view engine', 'pug');</code></pre>
+        <p>Nous pouvons maintenant utiliser la fonction <code class="language-js">render()</code> pour retourner un fichier .pug :</p>
+        <pre><code class="language-js">res.render('index', { username: 'johndoe' });</code></pre>
+        <p>Créez ensuite un fichier index.pug dans un nouveau dossier nommé "views".</p>
+        <footer>
+            <a href="#" class="warning" style="font-size: 0.7em">Il est possible de modifier le dossier contenant les vues avec la fonction app.set('views', ...)</a>
+        </footer>
+    </section>
+
+    <section>
+        <h3>Pug</h3>
+        <p>Le moteur de template Pug utilise l'indentation pour organiser le code HTML (pas de balises).</p>
+        <p>Ajoutez le code suivant dans le fichier index.pug :</p>
+        <pre class="line-numbers"><code class="language-pug">// index.pug
+doctype html
+html
+    head
+        title My Project
+    body
+        h1= username
+</code></pre>
+        <footer>
+            <a href="https://pugjs.org" class="info" target="_blank">Documentation de Pug</a>
+        </footer>
+    </section>
+
+    <section>
+        <h3>Pug - héritage</h3>
+        <p>Pug permet d'effectuer de l'héritage dans les templates. Cela permet d'éviter de répéter le même code sur l'ensemble des pages :</p>
+        <pre class="line-numbers" data-line="7"><code class="language-pug">// layout.pug
+doctype html
+html
+    head
+        title My Project
+    body
+        block content
+</code></pre>
+        <pre class="line-numbers" data-line="2,4"><code class="language-pug">// index.pug
+extends layout.pug
+
+block content
+    h1= username
+</code></pre>
+    </section>
+
+    <section>
+        <h3>Pug - variables</h3>
+        <p>Il est possible d'afficher des variables dans un template pug de plusieurs façon. Nous avons déjà affiché le nom de l'utilisateur dans la variable h1 : <code class="language-pug">h1= username</code>.</p>
+        <p>Nous allons maintenant afficher le titre de la page dans la balise <strong>title</strong> :</p>
+        <pre class="line-numbers" data-line="5"><code class="language-pug">// layout.pug
+doctype html
+html
+    head
+        title My Project - #{title}
+    body
+        block content</code></pre>
+        <p>Ajoutez ensuite un nouveau paramètre dans la fonction <code class="language-js">render()</code> dans le fichier app.js</p>
+    </section>
+
+</section>

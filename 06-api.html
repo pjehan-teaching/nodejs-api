@@ -1,0 +1,290 @@
+<section id="api">
+
+    <section>
+        <h2>REST API</h2>
+    </section>
+
+    <section>
+        <h3>Qu'est-ce qu'une API REST ?</h3>
+        <p>Une API REST est une API qui respecte les contraintes de l'architecture REST.</p>
+        <p>REST signifie <em>Representational State Transfer</em>.</p>
+        <p>Il s'agit d'un style d'architecture logicielle défini par Roy Fielding en 2000.</p>
+        <p>Il est possible de créer une API REST avec NodeJS et Express.</p>
+    </section>
+
+    <section>
+        <h3>Contraintes de REST</h3>
+        <p>Une API REST doit respecter les contraintes suivantes :</p>
+        <ul>
+            <li>Client-Server</li>
+            <li>Stateless</li>
+            <li>Cache</li>
+            <li>Uniform Interface</li>
+            <li>Layered System</li>
+            <li>Code on Demand (optional)</li>
+        </ul>
+    </section>
+
+    <section>
+        <h3>Client-Server</h3>
+        <p>Le client et le serveur sont séparés et communiquent via une API.</p>
+        <p>Cela permet de simplifier l'évolution de l'application.</p>
+        <p>Par exemple, il est possible de changer le serveur sans impacter le client.</p>
+        <img src="assets/images/api-rest-client-server.png" alt="Client-Server">
+    </section>
+
+    <section>
+        <h3>Stateless</h3>
+        <p>Le serveur ne stocke aucune information sur le client.</p>
+        <p>Chaque requête doit contenir toutes les informations nécessaires au serveur pour comprendre la requête.</p>
+        <p>Cela permet de simplifier le développement du serveur.</p>
+        <img src="assets/images/api-rest-stateless.png" alt="Stateless">
+    </section>
+
+    <section>
+        <h3>Cache</h3>
+        <p>Le serveur doit indiquer si les données peuvent être mises en cache ou non.</p>
+        <p>Cela permet d'améliorer les performances de l'application.</p>
+    </section>
+
+    <section>
+        <h3>Uniform Interface</h3>
+        <p>Le serveur doit fournir une interface uniforme pour toutes les ressources.</p>
+        <p>Cela permet de simplifier le développement du client.</p>
+        <img src="assets/images/api-rest-uniform-interface.png" alt="Uniform Interface">
+    </section>
+
+    <section>
+        <h3>Layered System</h3>
+        <p>Le client ne doit pas savoir s'il communique directement avec le serveur ou avec un intermédiaire.</p>
+        <p>Cela permet de simplifier l'évolution de l'application.</p>
+    </section>
+
+    <section>
+        <h3>Code on Demand</h3>
+        <p>Le serveur peut envoyer du code au client pour étendre ses fonctionnalités.</p>
+        <p>Cela permet de simplifier le développement du client.</p>
+    </section>
+
+    <section>
+        <h3>Swagger</h3>
+        <p>Swagger est un outil permettant de documenter une API REST.</p>
+        <p>Il est possible de générer automatiquement la documentation de l'API à partir du code.</p>
+        <p>Il est également possible de tester l'API directement depuis la documentation.</p>
+        <p>Pour utiliser Swagger avec NodeJS, il est possible d'utiliser le module <a href="https://www.npmjs.com/package/swagger-autogen" target="_blank">swagger-autogen</a> :</p>
+        <pre><code class="language-bash">npm install --save-dev swagger-autogen</code></pre>
+    </section>
+
+    <section>
+        <h3>Swagger</h3>
+        <p>Il faut ensuite créer un fichier <code>swagger.js</code> :</p>
+        <pre class="line-numbers"><code class="language-javascript">const swaggerAutogen = require('swagger-autogen')();
+
+const doc = {
+  info: {
+    title: 'AmpsHero',
+    description: 'AmpsHero API',
+  },
+  host: 'localhost:8000'
+};
+
+const outputFile = './swagger-output.json';
+const routes = ['./app.js'];
+
+swaggerAutogen(outputFile, routes, doc);</code></pre>
+    </section>
+
+    <section>
+        <h3>Swagger</h3>
+        <p>On peut ensuite ajouter une commande dans le fichier <code>package.json</code> :</p>
+        <pre class="line-numbers"><code class="language-json">"scripts": {
+    "swagger": "node ./swagger.js"
+}</code></pre>
+        <p>Il est ensuite possible de générer la documentation avec la commande suivante :</p>
+        <pre class="line-numbers"><code class="language-bash">npm run swagger</code></pre>
+    </section>
+
+    <section>
+        <h3>Swagger</h3>
+        <p>On peut ensuite installer le package <a href="https://www.npmjs.com/package/swagger-ui-express" target="_blank">swagger-ui-express</a> afin d'afficher la documentation générée :</p>
+        <pre class="line-numbers"><code class="language-bash">npm install swagger-ui-express</code></pre>
+        <p>On peut ensuite modifier le fichier routes/index.js :</p>
+        <pre class="line-numbers"><code class="language-javascript">var express = require('express');
+var router = express.Router();
+const swaggerUi = require('swagger-ui-express');
+const swaggerDocument = require('../swagger-output.json');
+
+router.use('/', swaggerUi.serve);
+router.get('/', swaggerUi.setup(swaggerDocument));
+
+module.exports = router;</code></pre>
+        <div class="instructions">
+            <ul>
+                <li>Installer et configurer Swagger</li>
+            </ul>
+        </div>
+    </section>
+
+    <section>
+        <h3>Passport</h3>
+        <p>Passport est un module permettant de gérer l'authentification dans une application NodeJS.</p>
+        <p>Nous allons l'utiliser conjointement à Mongoose pour gérer la sécurité de notre API :</p>
+        <pre><code class="language-bash">npm install express-session jsonwebtoken passport passport-jwt passport-local passport-local-mongoose</code></pre>
+    </section>
+
+    <section>
+        <h3>Passport - Schema User</h3>
+        <p>Il faut ensuite modifier le modèle User afin d'ajouter les champs nécessaires à l'authentification :</p>
+        <pre class="line-numbers" data-line="3,9"><code class="language-javascript">const mongoose = require('mongoose');
+const {Schema} = mongoose;
+const passportLocalMongoose = require('passport-local-mongoose');
+
+const userSchema = new Schema({
+  // User properties
+});
+
+userSchema.plugin(passportLocalMongoose);
+
+const User = mongoose.model('User', userSchema);
+
+module.exports = User;</code></pre>
+    </section>
+
+    <section>
+        <h3>Passport - Variables d'environnement</h3>
+        <p>Il faut ensuite ajouter les variables d'environnement suivantes dans le fichier <code>.env</code> :</p>
+        <pre class="line-numbers" data-line="2,3"><code class="language-textfile">PORT=8000
+SESSION_SECRET=secret
+JWT_SECRET=secret</code></pre>
+    </section>
+
+    <section>
+        <h3>Passport - Strategy</h3>
+        <p>Il faut ensuite créer un fichier <code>middlewares/passport.js</code> :</p>
+        <pre class="line-numbers" style="max-height: 40vh;"><code class="language-javascript">const User = require("../models/User");
+const passport = require("passport");
+const passportJWT = require("passport-jwt");
+const ExtractJwt = passportJWT.ExtractJwt;
+const Strategy = passportJWT.Strategy;
+
+const params = {
+  secretOrKey: process.env.JWT_SECRET,
+  jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken()
+};
+
+module.exports = function() {
+  const strategy = new Strategy(params, (payload, done) => {
+    User.findById(payload.id)
+      .then(user => {
+        if (payload.expire <= Date.now()) {
+          return done(new Error("TokenExpired"), null);
+        }
+        return done(null, user);
+      })
+      .catch(err => done(err, null));
+  });
+
+  passport.use(strategy);
+
+  return { initialize: () => passport.initialize() };
+};</code></pre>
+        <p>Puis importer le middleware dans le fichier <code>app.js</code> :</p>
+        <pre class="line-numbers"><code class="language-javascript">const passport = require("./middlewares/passport")();
+app.use(passport.initialize());</code></pre>
+    </section>
+
+    <section>
+        <h3>Passport</h3>
+        <p>Il faut ensuite créer un fichier <code>routes/auth.js</code> :</p>
+        <pre class="line-numbers" style="max-height: 40vh;"><code class="language-javascript">const express = require('express');
+const jwt = require('jsonwebtoken');
+const router = express.Router();
+const User = require("../models/User");
+
+router.post("/register", async (req, res) => {
+  User.register(
+    new User({
+      email: req.body.email,
+      username: req.body.username
+    }), req.body.password, function (err, user) {
+      if (err) {
+        res.json(err);
+      } else {
+        res.json(user);
+      }
+    }
+  );
+});
+
+router.post("/login", async (req, res) => {
+  User.findOne({ username: req.body.username })
+    .then(user => {
+      const payload = {
+        id: user.id,
+        expire: Date.now() + 1000 * 60 * 60 * 24 * 7
+      }
+
+      const token = jwt.sign(payload, process.env.JWT_SECRET)
+
+      res.json({ token: token });
+  })
+    .catch(err => res.json(err));
+});
+
+module.exports = router;</code></pre>
+        <p>Puis importer les routes dans le fichier <code>app.js</code> :</p>
+        <pre class="line-numbers"><code class="language-javascript">const authRouter = require('./routes/auth');
+app.use('/auth', authRouter);</code></pre>
+    </section>
+
+    <section>
+        <h3>Passport</h3>
+        <p>Il sera ensuite possible de sécuriser une route en ajoutant le middleware <code class="language-js">passport.authenticate('jwt', { session: false })</code> :</p>
+        <pre class="line-numbers"><code class="language-javascript">router.get('/profile', passport.authenticate('jwt', { session: false }), (req, res) => {
+    res.json(req.user);
+});</code></pre>
+        <div class="instructions">
+            <ul>
+                <li>Installer et configurer Passport</li>
+                <li>Sécuriser certaines routes de l'API</li>
+            </ul>
+        </div>
+    </section>
+
+    <section>
+        <h3>Upload de fichier</h3>
+        <p>Il est possible d'uploader des fichiers avec Express en utilisant le module <a href="https://www.npmjs.com/package/multer" target="_blank">multer</a> :</p>
+        <pre><code class="language-bash">npm install multer</code></pre>
+        <p>Plusieurs approchent peuvent ensuite être mises en place pour gérer l'upload des fichiers :</p>
+        <ul>
+            <li>Encoder le fichier en base64 et l'envoyer dans le corps de la requête</li>
+            <li>Envoyer le fichier avant les autres données en encodant les données avec <code class="language-textfile">multipart/form-data</code></li>
+        </ul>
+    </section>
+
+    <section>
+        <h3>Upload de fichier</h3>
+        <p>Nous allons mettre en place la seconde approche avec une nouvelle route pour gérer les uploads de fichier en créant un fichier <code>routes/uploads.js</code> :</p>
+        <pre class="line-numbers"><code class="language-js">var express = require('express');
+var router = express.Router();
+const multer = require("multer");
+
+const storage = multer.diskStorage({
+  destination: function(req, file, cb) {
+    cb(null, './public/uploads')
+  },
+  filename: function(req, file, cb) {
+    cb(null, file.originalname)
+  }
+});
+
+const upload = multer({storage: storage});
+
+router.post('/', upload.single('file'), (req, res) => {
+  res.json({file: req.file});
+});
+
+module.exports = router;</code></pre>
+    </section>
+
+</section>

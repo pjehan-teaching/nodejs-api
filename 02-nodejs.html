@@ -1,0 +1,143 @@
+<section id="nodejs">
+
+    <section>
+        <h2>NodeJS</h2>
+    </section>
+
+    <section>
+        <h3>Qu'est-ce que NodeJS ?</h3>
+        <div class="container">
+            <div class="col" style="flex-grow: 2;">
+                <ul>
+                    <li>Environnement d'exécution JavaScript côté serveur</li>
+                    <li>Basé sur le moteur JavaScript V8 de Google</li>
+                    <li>Open-source et multi-plateforme</li>
+                    <li>Créé par Ryan Dahl en 2009</li>
+                </ul>
+            </div>
+            <div class="col">
+                <img src="assets/images/ryan_dahl.jpg" alt="Ryan Dahl">
+            </div>
+        </div>
+    </section>
+
+    <section>
+        <h3>Moteur JavaScript</h3>
+        <p>Un moteur JavaScript est un programme permettant d'exécuter du code JavaScript.</p>
+        <p>L'ensemble des navigateurs web utilisent un moteur JavaScript :</p>
+        <ul>
+            <li>Mozilla Firefox : SpiderMonkey</li>
+            <li>Google Chrome : V8</li>
+            <li>Microsoft Edge : <del>Chakra</del> V8</li>
+            <li>Apple Safari : JavaScriptCore</li>
+        </ul>
+    </section>
+
+    <section>
+        <h3>NodeJS et V8</h3>
+        <div class="container">
+            <div class="col">
+                <p>NodeJS est basé sur le moteur JavaScript V8 développé initialement pour le navigateur Google Chrome.</p>
+                <p>Pour connaitre la version utilisée avec votre version de NodeJS, vous pouvez utiliser la commande ci-dessous :</p>
+            </div>
+            <div class="col">
+                <img src="assets/images/v8.png" alt="V8">
+            </div>
+        </div>
+        <pre class="line-numbers"><code class="language-bash">node -p process.versions.v8</code></pre>
+    </section>
+
+    <section>
+        <h3>V8</h3>
+        <div class="container">
+            <div class="col">
+                <p>Rendu open source en 2008, V8 permet de compiler du code JavaScript en code machine plutôt que de l'interpréter à la volée (JIT).</p>
+                <p>Il est possible d'ajouter du code C++ au moteur V8. C'est ce qui a permis en 2009 le développement de NodeJS.</p>
+            </div>
+            <div class="col">
+                <img src="assets/images/js_layers.png" alt="JavaScript layers">
+                <img src="assets/images/v8_schema.png" alt="V8 schema">
+            </div>
+        </div>
+        <footer>
+            <a href="#" class="warning" style="font-size: 0.8em;">Le code étant compilé, il faudra redémarrer le serveur à chaque modification</a>
+        </footer>
+    </section>
+
+    <section>
+        <h3>libuv (Unicorn Velociraptor Library)</h3>
+        <div class="container">
+            <div class="col">
+                <p>libuv est une librairie multi-plateformes écrite en C et permettant de gérer la partie asynchrone de NodeJS.</p>
+                <p>Cette librairie a été développée pour le projet NodeJS mais elle est maintenant utilisée dans d'autres projets.</p>
+            </div>
+            <div class="col">
+                <img src="assets/images/libuv.png" alt="libuv">
+            </div>
+        </div>
+        <footer>
+            <a href="http://libuv.org" class="info" target="_blank">libuv.org</a>
+        </footer>
+    </section>
+
+    <section>
+        <h3>Event loop</h3>
+        <ul>
+            <li>Single thread</li>
+            <li>Single stack</li>
+            <li>LIFO (Last In First Out)</li>
+            <li>IDLE not paused</li>
+        </ul>
+        <img src="assets/images/eventloop.png" alt="Event loop">
+    </section>
+
+    <section>
+        <h3>Single thread</h3>
+        <p>Contrairement à d'autres langages tels que le Java ou le C#, NodeJS n'est pas conçu pour supporter le multithreading.</p>
+        <p>Cependant, le système d'event loop permet dans certains cas d'obtenir de meilleurs performances.</p>
+        <img src="assets/images/singlethreaded.png" alt="Single Threaded">
+        <footer>
+            <a href="https://nodejs.org/api/child_process.html" class="info" style="font-size: 0.7em;" target="_blank">NodeJS permet cependant de créer plusieurs thread grâce au module <strong>child_process</strong></a>
+        </footer>
+    </section>
+
+    <section>
+        <h3>Tâches bloquantes</h3>
+        <p>Si une tâche n'implique <strong>pas de traitement lourd</strong> comme faire un calcul ou affecter une valeur à une variable, <strong>Event loop</strong> va réaliser le traitement.</p>
+        <p>Cependant, s'il s'agit d'un <strong>traitement lourd</strong> comme écrire dans un fichier ou rechercher des données en base de données, le traitement sera dans ce cas attribué au <strong>Worker pool</strong> et ce fera dans un nouveau thread.</p>
+    </section>
+
+    <section>
+        <h3>Installation</h3>
+        <p>NodeJS est disponible sur <a href="https://nodejs.org/en/download/" class="info" target="_blank">nodejs.org</a></p>
+        <p>Cette installation va également installer le gestionnaire de paquets <strong>NPM</strong> (Node Package Manager).</p>
+    </section>
+
+    <section>
+        <h3>Versions</h3>
+        <p>NodeJS est un projet open-source et est donc en constante évolution.</p>
+        <p>Il existe deux versions de NodeJS :</p>
+        <ul>
+            <li>Version LTS (Long Term Support) : version stable et maintenue pendant 30 mois</li>
+            <li>Version Current : version en cours de développement</li>
+        </ul>
+        <p>Il est conseillé d'utiliser la <strong>version LTS pour un projet en production</strong>.</p>
+    </section>
+
+    <section>
+        <h3>Node Package Manager</h3>
+        <p>NPM est le <strong>gestionnaire de paquets</strong> officiel de NodeJS.</p>
+        <p>Il permet d'installer des modules NodeJS et de <strong>gérer les dépendances</strong> d'un projet.</p>
+        <p>Il est également possible de créer des modules et de les publier sur le registre <a href="https://npmjs.com" target="_blank">npmjs.com</a>.</p>
+    </section>
+
+    <section>
+        <h3>Créer un projet NodeJS</h3>
+        <p>Créer un dossier pour votre projet et initialiser le projet avec la commande <code>npm init</code>.</p>
+        <pre class="line-numbers"><code class="language-bash">mkdir my-project
+cd my-project
+npm init</code></pre>
+        <p>Vous pouvez également utiliser la commande <code class="language-bash">npm init -y</code> pour créer le projet avec les valeurs par défaut.</p>
+    </section>
+
+</section>

@@ -1,0 +1,59 @@
+.reveal {
+
+  pre[class*="language-"] {
+    width: 100%;
+    box-sizing: border-box;
+    font-size: 0.6em;
+    padding: 0.5em;
+
+    code {
+      padding: 0;
+    }
+  }
+
+  ul + p,
+  ol + p {
+    margin-top: 1rem;
+  }
+
+  .text-small {
+    font-size: 0.8em;
+  }
+
+  .instructions {
+    &:before {
+      position: absolute;
+      top: 1rem;
+      right: 1rem;
+    }
+
+    > ul {
+      margin-left: 0;
+      list-style-type: none;
+
+      li {
+        margin-bottom: 1rem;
+
+        &:hover {
+          cursor: pointer;
+        }
+
+        &:before {
+          content: "\f096";
+          display: inline-block;
+          height: 1em;
+          width: 1em;
+          font-family: FontAwesome, serif;
+        }
+
+        &.done {
+            &:before {
+                content: "\f046";
+                color: #3cbd68;
+            }
+        }
+      }
+    }
+  }
+
+}
