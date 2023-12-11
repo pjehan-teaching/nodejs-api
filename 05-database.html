@@ -233,7 +233,7 @@ const MongoClient = require('mongodb').MongoClient;
 /**
  * Listen on provided port, on all network interfaces.
  */
-MongoClient.connect('mongodb://localhost:27017', { useNewUrlParser: true, useUnifiedTopology: true })
+MongoClient.connect('mongodb://localhost:27017')
   .then(client => {
     app.locals.db = client.db('mydb'); // Enregistrement de la connexion dans les variables locales
     server.listen(port); // Démarrer le serveur une fois la connexion ouverte
