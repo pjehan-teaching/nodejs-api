@@ -129,7 +129,7 @@ module.exports = router;</code></pre>
         <h3>Passport</h3>
         <p>Passport est un module permettant de gérer l'authentification dans une application NodeJS.</p>
         <p>Nous allons l'utiliser conjointement à Mongoose pour gérer la sécurité de notre API :</p>
-        <pre><code class="language-bash">npm install express-session jsonwebtoken passport passport-jwt passport-local passport-local-mongoose</code></pre>
+        <pre><code class="language-bash">npm install jsonwebtoken passport passport-jwt passport-local passport-local-mongoose</code></pre>
     </section>
 
     <section>
@@ -159,6 +159,7 @@ const passportLocalMongoose = require('passport-local-mongoose');
 
 const userSchema = new Schema({
   // User properties
+  // Properties username, hash and salt will be auto-generated
 });
 
 userSchema.plugin(passportLocalMongoose);
@@ -172,7 +173,6 @@ module.exports = User;</code></pre>
         <h3>Passport - Variables d'environnement</h3>
         <p>Il faut ensuite ajouter les variables d'environnement suivantes dans le fichier <code>.env</code> :</p>
         <pre class="line-numbers" data-line="2,3"><code class="language-textfile">PORT=8000
-SESSION_SECRET=secret
 JWT_SECRET=secret</code></pre>
     </section>
 
@@ -206,9 +206,17 @@ module.exports = function() {
 
   return { initialize: () => passport.initialize() };
 };</code></pre>
+    </section>
+
+    <section>
+        <h3>Passport</h3>
         <p>Puis importer le middleware dans le fichier <code>app.js</code> :</p>
-        <pre class="line-numbers"><code class="language-javascript">const passport = require("./middlewares/passport")();
-app.use(passport.initialize());</code></pre>
+        <pre class="line-numbers"><code class="language-javascript">const passport = require('passport');
+const passportMiddleware = require("./middlewares/passport")();
+const User = require("./models/User");
+
+app.use(passportMiddleware.initialize());
+passport.use(User.createStrategy());</code></pre>
     </section>
 
     <section>
@@ -235,18 +243,19 @@ router.post("/register", async (req, res) => {
 });
 
 router.post("/login", async (req, res) => {
-  User.findOne({ username: req.body.username })
-    .then(user => {
-      const payload = {
-        id: user.id,
-        expire: Date.now() + 1000 * 60 * 60 * 24 * 7
-      }
+  const {user} = await User.authenticate()(req.body.username, req.body.password);
+  if (user) {
+    const payload = {
+      id: user.id,
+      expire: Date.now() + 1000 * 60 * 60 * 24 * 7
+    }
 
-      const token = jwt.sign(payload, process.env.JWT_SECRET)
+    const token = jwt.sign(payload, process.env.JWT_SECRET)
 
-      res.json({ token: token });
-  })
-    .catch(err => res.json(err));
+    res.json({ token: token });
+  } else {
+    res.json({ error: 'Can\'t connect!' });
+  }
 });
 
 module.exports = router;</code></pre>
