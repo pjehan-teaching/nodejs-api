@@ -133,6 +133,24 @@ module.exports = router;</code></pre>
     </section>
 
     <section>
+        <h3>JWT</h3>
+        <p>JWT signifie <em>JSON Web Token</em>.</p>
+        <p>Il s'agit d'un standard permettant de créer des tokens d'authentification.</p>
+        <p>Il est possible de créer des tokens avec le module <a href="https://www.npmjs.com/package/jsonwebtoken" target="_blank">jsonwebtoken</a> :</p>
+        <p>Il est possible de tester un token JWT depuis ce site : <a href="https://jwt.io" target="_blank">jwt.io</a></p>
+    </section>
+
+    <section>
+        <h3>Authentification - Session</h3>
+        <img src="assets/images/auth-session.jpg" alt="Session">
+    </section>
+
+    <section>
+        <h3>Authentification - Token</h3>
+        <img src="assets/images/auth-token.jpg" alt="Token">
+    </section>
+
+    <section>
         <h3>Passport - Schema User</h3>
         <p>Il faut ensuite modifier le modèle User afin d'ajouter les champs nécessaires à l'authentification :</p>
         <pre class="line-numbers" data-line="3,9"><code class="language-javascript">const mongoose = require('mongoose');
