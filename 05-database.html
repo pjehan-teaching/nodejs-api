@@ -209,8 +209,8 @@ db.user.destroy({ where: { password: null } }).then(function(users) {
 
 services:
   mongodb:
-    restart: on-failure
     image: mongo:7.0.4
+    restart: on-failure
     volumes:
       - ./data:/data/db
     ports:
@@ -227,19 +227,30 @@ services:
         <h3>Driver NodeJS pour MongoDB</h3>
         <p>Pour utiliser une base de données dans notre application, nous allons commencer par installer un driver.</p>
         <p>Dans notre cas, nous allons utiliser un driver MongoDB : <a href="https://www.npmjs.com/package/mongodb" target="_blank">mongodb</a></p>
-        <pre><code class="language-js">// bin/www
-const MongoClient = require('mongodb').MongoClient;
+        <pre style="max-height: 50vh"><code class="language-js">// bin/www
+import { MongoClient } from 'mongodb';
+
+/**
+ * Connect to MongoDB
+ */
+const client = new MongoClient('mongodb://localhost:27017');
+
+async function connectToMongo() {
+  try {
+    await client.connect();
+    console.log('Connected to MongoDB');
+    app.locals.db = client.db('DB_NAME');
+  } catch (err) {
+    console.error(err);
+  }
+}
 
 /**
  * Listen on provided port, on all network interfaces.
  */
-MongoClient.connect('mongodb://localhost:27017')
-  .then(client => {
-    app.locals.db = client.db('mydb'); // Enregistrement de la connexion dans les variables locales
-    server.listen(port); // Démarrer le serveur une fois la connexion ouverte
-  })
-  .catch(err => console.log(err))
-;
+connectToMongo()
+  .then(() => server.listen(port))
+  .catch(err => console.error(err));
 
 server.on('error', onError);
 server.on('listening', onListening);</code></pre>
@@ -248,9 +259,10 @@ server.on('listening', onListening);</code></pre>
     <section>
         <h3>Driver NodeJS pour MongoDB</h3>
         <p>Nous pouvons alors utiliser la connexion à la base de données dans nos routes :</p>
-        <pre><code class="language-js">router.get('/', function(req, res, next) {
+        <pre><code class="language-js">router.get('/', async function(req, res, next) {
   const { db } = req.app.locals;
-  db.collection('users').find().toArray((err, users) => res.json(users));
+  const users = await db.collection('users').find().toArray();
+  res.json(users)
 });</code></pre>
         <footer>
             <a href="https://mongodb.github.io/node-mongodb-native/" class="info" target="_blank">Documentation driver MongoDB pour NodeJS</a>
@@ -259,31 +271,32 @@ server.on('listening', onListening);</code></pre>
 
     <section>
         <h3>Mongoose</h3>
-        <p>Mongoose est un ORM/ODM pour NodeJS. Il va nous permettre d'utiliser la syntaxe objet pour manipuler nos données.</p>
+        <p>Mongoose est un <abbr title="Object Document Mapping">ODM</abbr> pour NodeJS. Il va nous permettre d'utiliser la syntaxe objet pour manipuler nos données.</p>
         <p>Installez le package <a href="https://www.npmjs.com/package/mongoose" target="_blank">mongoose</a> puis ouvrez une connection :</p>
-        <pre><code class="language-js">const mongoose = require('mongoose');
+        <pre><code class="language-js">import mongoose from "mongoose";
 
-mongoose.connect('mongodb://localhost:27017/amps-hero')
-  .then(() => {
-    app.locals.db = mongoose.connection;
-    server.listen(port); // Démarrer le serveur une fois la connexion ouverte
-  })
-  .catch(e => console.log(e));
-</code></pre>
+async function connectToMongo() {
+  try {
+    await mongoose.connect('mongodb://localhost:27017/DB_NAME');
+    console.log('Connected to MongoDB');
+  } catch (err) {
+    console.error(err);
+  }
+}</code></pre>
     </section>
 
     <section>
         <h3>Mongoose - Schema</h3>
         <p>Nous allons maintenant créer un nouveau schema <strong>User</strong> :</p>
         <pre><code class="language-js">// models/User.js
-const mongoose = require('mongoose');
+import { Schema, model } from 'mongoose';
 
-const userSchema = new mongoose.Schema({
-    firstName: String,
-    lastName: String,
+const userSchema = new Schema({
+  firstName: String,
+  lastName: String,
 });
 
-module.exports = mongoose.model('User', userSchema);</code></pre>
+export default model("User", userSchema);</code></pre>
         <div class="instructions">
             <ul>
                 <li>Créer les models Mongoose en suivant le projet fil rouge</li>
@@ -294,7 +307,7 @@ module.exports = mongoose.model('User', userSchema);</code></pre>
     <section>
         <h3>Mongoose - Validation</h3>
         <p>Il est possible de définir des règles de validation pour les champs d'un schema :</p>
-        <pre><code class="language-js">const userSchema = new mongoose.Schema({
+        <pre><code class="language-js">const userSchema = new Schema({
     firstName: {
         type: String,
         required: true,
@@ -321,20 +334,19 @@ module.exports = mongoose.model('User', userSchema);</code></pre>
     <section>
         <h3>Mongoose - Create</h3>
         <p>Vous pouvez ensuite enregistrer les données en base de données de cette façon :</p>
-        <pre><code class="language-js">let user = new User(req.body);
-user.save()
-    .then(() => {
-      res.send('User created !');
-    })
-    .catch(e => {
-      res.send('Error while creating user');
-    });</code></pre>
+        <pre><code class="language-js">const user = new User(req.body);
+try {
+    const result = await user.save();
+    res.json(result);
+} catch (error) {
+    res.status(400).send(error);
+}</code></pre>
     </section>
 
     <section>
         <h3>Mongoose - Jointures</h3>
         <p>L'ORM Mongoose propose une méthode <code class="language-js">populate()</code> qui permet d'effectuer des jointures entre les collections plus facilement qu'avec l'aggregation <code class="language-js">$lookup</code> :</p>
-        <pre><code class="language-js">User.findOne({ firstName: 'John' }).populate('posts').exec((err, user) => res.json(user))</code></pre>
+        <pre><code class="language-js">const users = await User.findOne({ firstName: 'John' }).populate('posts').exec()</code></pre>
         <footer>
             <a href="https://mongoosejs.com/docs/populate.html" class="info" target="_blank">Populate documentation</a>
         </footer>

@@ -67,17 +67,17 @@ npm install</code></pre>
     <section>
         <h3>Configuration d'Express</h3>
         <p>Le fichier <code>app.js</code> va importer les modules nécessaires à l'application :</p>
-        <pre class="line-numbers"><code class="language-javascript">const express = require('express');
-const path = require('path');
+        <pre class="line-numbers"><code class="language-javascript">import express from 'express';
+import path from 'path';
 ...</code></pre>
         <p>Il va ensuite créer une instance d'Express :</p>
         <pre class="line-numbers"><code class="language-javascript">const app = express();</code></pre>
         <p>Il va ensuite configurer l'application :</p>
-        <pre class="line-numbers"><code class="language-javascript">app.set('views', path.join(__dirname, 'views'));
+        <pre class="line-numbers"><code class="language-javascript">app.set('views', path.join(path.resolve(), 'views'));
 app.set('view engine', 'pug');</code></pre>
         <p>Il va ensuite importer les routes de l'application :</p>
-        <pre class="line-numbers"><code class="language-javascript">const indexRouter = require('./routes/index');
-const usersRouter = require('./routes/users');</code></pre>
+        <pre class="line-numbers"><code class="language-javascript">import indexRouter from './routes/index.js';
+import usersRouter from './routes/users.js';</code></pre>
     </section>
 
     <section>

@@ -64,6 +64,35 @@
         <h3>Code on Demand</h3>
         <p>Le serveur peut envoyer du code au client pour étendre ses fonctionnalités.</p>
         <p>Cela permet de simplifier le développement du client.</p>
+        <p>Le serveur peut par exemple envoyer du code JavaScript au client pour exécuter des actions spécifiques.</p>
+    </section>
+
+    <section>
+        <h3>Codes HTTP</h3>
+        <p>Les codes HTTP permettent de définir le statut d'une requête.</p>
+        <p>Il existe 5 catégories de codes HTTP :</p>
+        <ul>
+            <li>1xx : Information</li>
+            <li>2xx : Succès</li>
+            <li>3xx : Redirection</li>
+            <li>4xx : Erreur client</li>
+            <li>5xx : Erreur serveur</li>
+        </ul>
+    </section>
+
+    <section>
+        <h3>Codes HTTP</h3>
+        <p>Les codes HTTP les plus courants pour la création d'une API sont :</p>
+        <ul>
+            <li>200 : OK</li>
+            <li>201 : Created</li>
+            <li>400 : Bad Request</li>
+            <li>401 : Unauthorized</li>
+            <li>403 : Forbidden</li>
+            <li>404 : Not Found</li>
+            <li>405 : Method Not Allowed</li>
+            <li>500 : Internal Server Error</li>
+        </ul>
     </section>
 
     <section>
@@ -73,6 +102,22 @@
         <p>Il est également possible de tester l'API directement depuis la documentation.</p>
         <p>Pour utiliser Swagger avec NodeJS, il est possible d'utiliser le module <a href="https://www.npmjs.com/package/swagger-autogen" target="_blank">swagger-autogen</a> :</p>
         <pre><code class="language-bash">npm install --save-dev swagger-autogen</code></pre>
+    </section>
+
+    <section>
+        <h3>OpenAPI</h3>
+        <p>
+            Historiquement, Swagger est à l'origine des <strong>spécifications</strong> (Swagger Specification) et
+            d'<strong>outils</strong> (Swagger UI, Swagger Editor...) permettant de documenter des API REST.
+        </p>
+        <p>
+            Cependant, en 2015, la fondation OpenAPI (projet faisant partie de la Linux Foundation) a été créée et
+            l'entreprise SmartBear Software a décidé de donner la spécification Swagger à la fondation.
+        </p>
+        <p>
+            Aujourd'hui, la spécification Swagger est devenue <strong>OpenAPI Specification</strong> et Swagger
+            continue d'être utilisé pour désigner les outils permettant de documenter des API REST.
+        </p>
     </section>
 
     <section>
@@ -91,7 +136,7 @@ const doc = {
 const outputFile = './swagger-output.json';
 const routes = ['./app.js'];
 
-swaggerAutogen(outputFile, routes, doc);</code></pre>
+swaggerAutogen({openapi: '3.0.0'})(outputFile, routes, doc);</code></pre>
     </section>
 
     <section>
@@ -101,28 +146,37 @@ swaggerAutogen(outputFile, routes, doc);</code></pre>
     "swagger": "node ./swagger.js"
 }</code></pre>
         <p>Il est ensuite possible de générer la documentation avec la commande suivante :</p>
-        <pre class="line-numbers"><code class="language-bash">npm run swagger</code></pre>
+        <pre><code class="language-bash">npm run swagger</code></pre>
     </section>
 
     <section>
         <h3>Swagger</h3>
         <p>On peut ensuite installer le package <a href="https://www.npmjs.com/package/swagger-ui-express" target="_blank">swagger-ui-express</a> afin d'afficher la documentation générée :</p>
-        <pre class="line-numbers"><code class="language-bash">npm install swagger-ui-express</code></pre>
+        <pre><code class="language-bash">npm install --save-dev swagger-ui-express</code></pre>
         <p>On peut ensuite modifier le fichier routes/index.js :</p>
-        <pre class="line-numbers"><code class="language-javascript">var express = require('express');
-var router = express.Router();
-const swaggerUi = require('swagger-ui-express');
-const swaggerDocument = require('../swagger-output.json');
+        <pre class="line-numbers"><code class="language-javascript">import express from 'express';
+import swaggerUi from 'swagger-ui-express';
+import swaggerDocument from '../swagger-output.json' with { type: "json" };
+
+const router = express.Router();
 
 router.use('/', swaggerUi.serve);
 router.get('/', swaggerUi.setup(swaggerDocument));
 
-module.exports = router;</code></pre>
+export default router;</code></pre>
         <div class="instructions">
             <ul>
                 <li>Installer et configurer Swagger</li>
             </ul>
         </div>
+    </section>
+
+    <section>
+        <h3>Swagger</h3>
+        <p>
+            Il est possible d'<a href="https://swagger-autogen.github.io/docs/endpoints/" target="_blank">ajouter
+            des annotations</a> dans le code pour personnaliser la documentation générée.
+        </p>
     </section>
 
     <section>
@@ -153,9 +207,8 @@ module.exports = router;</code></pre>
     <section>
         <h3>Passport - Schema User</h3>
         <p>Il faut ensuite modifier le modèle User afin d'ajouter les champs nécessaires à l'authentification :</p>
-        <pre class="line-numbers" data-line="3,9"><code class="language-javascript">const mongoose = require('mongoose');
-const {Schema} = mongoose;
-const passportLocalMongoose = require('passport-local-mongoose');
+        <pre class="line-numbers" data-line="2,9"><code class="language-javascript">import mongoose, { Schema } from 'mongoose';
+import passportLocalMongoose from 'passport-local-mongoose';
 
 const userSchema = new Schema({
   // User properties
@@ -166,7 +219,7 @@ userSchema.plugin(passportLocalMongoose);
 
 const User = mongoose.model('User', userSchema);
 
-module.exports = User;</code></pre>
+export default User;</code></pre>
     </section>
 
     <section>
@@ -179,9 +232,9 @@ JWT_SECRET=secret</code></pre>
     <section>
         <h3>Passport - Strategy</h3>
         <p>Il faut ensuite créer un fichier <code>middlewares/passport.js</code> :</p>
-        <pre class="line-numbers" style="max-height: 40vh;"><code class="language-javascript">const User = require("../models/User");
-const passport = require("passport");
-const passportJWT = require("passport-jwt");
+        <pre class="line-numbers" style="max-height: 40vh;"><code class="language-javascript">import passport from "passport";
+import passportJWT from "passport-jwt";
+import User from "../models/User.js";
 const ExtractJwt = passportJWT.ExtractJwt;
 const Strategy = passportJWT.Strategy;
 
@@ -190,7 +243,7 @@ const params = {
   jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken()
 };
 
-module.exports = function() {
+export default function() {
   const strategy = new Strategy(params, (payload, done) => {
     User.findById(payload.id)
       .then(user => {
@@ -211,21 +264,22 @@ module.exports = function() {
     <section>
         <h3>Passport</h3>
         <p>Puis importer le middleware dans le fichier <code>app.js</code> :</p>
-        <pre class="line-numbers"><code class="language-javascript">const passport = require('passport');
-const passportMiddleware = require("./middlewares/passport")();
-const User = require("./models/User");
+        <pre class="line-numbers"><code class="language-javascript">import passport from "passport";
+import passportMiddleware from "./middlewares/passport.js";
+import User from "./models/User.js";
 
-app.use(passportMiddleware.initialize());
+app.use(passportMiddleware().initialize());
 passport.use(User.createStrategy());</code></pre>
     </section>
 
     <section>
         <h3>Passport</h3>
         <p>Il faut ensuite créer un fichier <code>routes/auth.js</code> :</p>
-        <pre class="line-numbers" style="max-height: 40vh;"><code class="language-javascript">const express = require('express');
-const jwt = require('jsonwebtoken');
+        <pre class="line-numbers" style="max-height: 40vh;"><code class="language-javascript">import express from "express";
+import jwt from "jsonwebtoken";
+import User from "../models/User.js";
+
 const router = express.Router();
-const User = require("../models/User");
 
 router.post("/register", async (req, res) => {
   User.register(
@@ -258,9 +312,9 @@ router.post("/login", async (req, res) => {
   }
 });
 
-module.exports = router;</code></pre>
+export default router;</code></pre>
         <p>Puis importer les routes dans le fichier <code>app.js</code> :</p>
-        <pre class="line-numbers"><code class="language-javascript">const authRouter = require('./routes/auth');
+        <pre class="line-numbers"><code class="language-javascript">import authRouter from './routes/auth.js';
 app.use('/auth', authRouter);</code></pre>
     </section>
 
@@ -292,9 +346,9 @@ app.use('/auth', authRouter);</code></pre>
     <section>
         <h3>Upload de fichier</h3>
         <p>Nous allons mettre en place la seconde approche avec une nouvelle route pour gérer les uploads de fichier en créant un fichier <code>routes/uploads.js</code> :</p>
-        <pre class="line-numbers"><code class="language-js">var express = require('express');
-var router = express.Router();
-const multer = require("multer");
+        <pre class="line-numbers"><code class="language-js">import express from 'express';
+import multer from 'multer';
+const router = express.Router();
 
 const storage = multer.diskStorage({
   destination: function(req, file, cb) {
@@ -311,7 +365,97 @@ router.post('/', upload.single('file'), (req, res) => {
   res.json({file: req.file});
 });
 
-module.exports = router;</code></pre>
+export default router;</code></pre>
+    </section>
+
+    <section>
+        <h3>Alternatives - graphQL</h3>
+        <div class="container">
+            <div class="col">
+                <p>
+                    GraphQL est un langage de requête permettant de demander des données spécifiques au serveur.
+                    Il a été créé par Facebook en 2012 et est devenu open-source en 2015.
+                </p>
+                <p>
+                    Il est possible de créer une API GraphQL avec NodeJS et Express en utilisant les modules
+                    <a href="https://www.graphql-js.org/docs/running-an-express-graphql-server/" target="_blank">
+                        graphql et graphql-http
+                    </a>.
+                </p>
+            </div>
+            <div class="col">
+                <img src="assets/images/graphql.svg" alt="GraphQL">
+            </div>
+        </div>
+        <footer>
+            <a href="https://www.youtube.com/watch?v=yWzKJPw_VzM&ab_channel=ByteByteGo" class="info" target="_blank">
+                Vidéo YouTube sur GraphQL
+            </a>
+        </footer>
+    </section>
+
+    <section>
+        <h3>Alternatives - gRPC</h3>
+        <div class="container">
+            <div class="col">
+                <p>
+                    gRPC est un framework RPC (Remote Procedure Call) open-source créé par Google en 2015.
+                    Il permet de créer des services RPC de manière simple et efficace.
+                </p>
+                <p>
+                    Il est possible de créer une API gRPC avec NodeJS en utilisant le module
+                    <a href="https://www.npmjs.com/package/@grpc/grpc-js" target="_blank">
+                        @grpc/grpc-js
+                    </a>.
+                </p>
+            </div>
+            <div class="col">
+                <img src="assets/images/grpc.png" alt="gRPC">
+            </div>
+        </div>
+        <footer>
+            <a href="https://www.youtube.com/watch?v=gnchfOojMk4&ab_channel=ByteByteGo" class="info" target="_blank">
+                Vidéo YouTube sur gRPC
+            </a>
+        </footer>
+    </section>
+
+    <section>
+        <h3>REST vs GraphQL vs gRPC</h3>
+        <div class="container">
+            <div class="col">
+                <h4>REST</h4>
+                <ul>
+                    <li>Simple</li>
+                    <li>Standardisé</li>
+                    <li>Peu de contraintes</li>
+                </ul>
+            </div>
+            <div class="col">
+                <h4>GraphQL</h4>
+                <ul>
+                    <li>Flexible</li>
+                    <li>Optimisé</li>
+                    <li>Peut être complexe</li>
+                </ul>
+            </div>
+            <div class="col">
+                <h4>gRPC</h4>
+                <ul>
+                    <li>Performant</li>
+                    <li>Optimisé</li>
+                    <li>Peut être complexe</li>
+                </ul>
+            </div>
+        </div>
+        <p>
+            Plus globalement, Rest et GraphQL sont des solutions assez similaires bien que GraphQL soit plus complexe
+            à implémenter et consomme plus de ressources côté serveur, mais permet cependant d'optimiser la bande passante.
+        </p>
+        <p>
+            gRPC est une solution plus performante que les deux autres, mais n'est pas adapté pour les API web et
+            est plus souvent utilisé pour les applications mobiles ou bien pour la communication entre microservices.
+        </p>
     </section>
 
 </section>

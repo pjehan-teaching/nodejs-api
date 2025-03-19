@@ -81,13 +81,12 @@ fs.readFile('file.txt', (err, data) => { // Si il n'y a qu'un seul paramètre, l
         <h3>Utiliser Promise</h3>
         <p>Pour utiliser notre fonction, il faut utiliser la méthode <code class="language-js">then</code> qui prend en paramètre une fonction à appeler en cas de succès :</p>
         <pre class="line-numbers"><code class="language-js">fetchData()
-    .then(data => {
+    .then(function(data) {
         console.log(data);
-    }
-    .catch(error => {
+    })
+    .catch(function(error) {
         console.log(error);
-    }
-);</code></pre>
+    });</code></pre>
     </section>
 
     <section>
@@ -121,8 +120,6 @@ fs.stat('file.txt', (err, stats) => {
   console.log(stats.size);
 });</code></pre>
     </section>
-
-
 
     <section>
         <h3>Asynchronisme</h3>
@@ -184,6 +181,11 @@ console.log(add(1, 2)); // 3</code></pre>
 export const sub = (a, b) => a - b;</code></pre>
             </div>
         </div>
+        <footer>
+            <a href="https://nodejs.org/api/esm.html#enabling" class="info" target="_blank">
+                Méthodes pour activer les ES Modules
+            </a>
+        </footer>
     </section>
 
 </section>
