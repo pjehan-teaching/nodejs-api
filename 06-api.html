@@ -123,12 +123,12 @@
     <section>
         <h3>Swagger</h3>
         <p>Il faut ensuite créer un fichier <code>swagger.js</code> :</p>
-        <pre class="line-numbers"><code class="language-javascript">const swaggerAutogen = require('swagger-autogen')();
+        <pre class="line-numbers"><code class="language-javascript">import swaggerAutogen from "swagger-autogen";
 
 const doc = {
   info: {
-    title: 'AmpsHero',
-    description: 'AmpsHero API',
+    title: 'MyProject',
+    description: 'MyProject API',
   },
   host: 'localhost:8000'
 };
