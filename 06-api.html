@@ -130,7 +130,7 @@ const doc = {
     title: 'MyProject',
     description: 'MyProject API',
   },
-  host: 'localhost:8000'
+  host: `localhost:${process.env.PORT}`
 };
 
 const outputFile = './swagger-output.json';
@@ -143,7 +143,7 @@ swaggerAutogen({openapi: '3.0.0'})(outputFile, routes, doc);</code></pre>
         <h3>Swagger</h3>
         <p>On peut ensuite ajouter une commande dans le fichier <code>package.json</code> :</p>
         <pre class="line-numbers"><code class="language-json">"scripts": {
-    "swagger": "node ./swagger.js"
+    "swagger": "node --env-file=.env --env-file=.env.local ./swagger.js"
 }</code></pre>
         <p>Il est ensuite possible de générer la documentation avec la commande suivante :</p>
         <pre><code class="language-bash">npm run swagger</code></pre>
